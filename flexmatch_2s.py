@@ -14,9 +14,9 @@ import torch.multiprocessing as mp
 
 from utils import net_builder, get_logger, count_parameters, over_write_args_from_file
 from train_utils import TBLog, get_optimizer, get_cosine_schedule_with_warmup
-from models.flexmatch.flexmatch import FlexMatch
 from datasets.ssl_dataset import SSL_Dataset, ImageNetLoader
 from datasets.data_utils import get_data_loader
+from models.flexmatch.flexmatch_2s import FlexMatch_2s
 
 
 def main(args):
@@ -120,7 +120,7 @@ def main_worker(gpu, ngpus_per_node, args):
                                     'is_remix': False},
                                    )
 
-    model = FlexMatch(_net_builder,
+    model = FlexMatch_2s(_net_builder,
                      args.num_classes,
                      args.ema_m,
                      args.T,
