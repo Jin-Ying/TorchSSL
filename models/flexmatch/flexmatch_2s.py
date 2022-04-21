@@ -244,7 +244,6 @@ class FlexMatch_2s:
             tb_dict = {}
             tb_dict['train/sup_loss'] = sup_loss.detach()
             tb_dict['train/unsup_loss'] = unsup_loss.detach()
-            tb_dict['train/total_loss'] = total_loss.detach()
             tb_dict['train/mask_ratio'] = 1.0 - mask.detach()
             tb_dict['lr'] = self.optimizer.param_groups[0]['lr']
             tb_dict['train/prefecth_time'] = start_batch.elapsed_time(end_batch) / 1000.
