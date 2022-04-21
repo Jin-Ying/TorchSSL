@@ -160,6 +160,12 @@ def main_worker(gpu, ngpus_per_node, args):
                                                                     device_ids=[args.gpu],
                                                                     broadcast_buffers=False,
                                                                     find_unused_parameters=True)
+            model.model_ta.cuda(args.gpu)
+            model.model_ta = nn.SyncBatchNorm.convert_sync_batchnorm(model.model_ta)
+            model.model_ta = torch.nn.parallel.DistributedDataParallel(model.model_ta,
+                                                                    device_ids=[args.gpu],
+                                                                    broadcast_buffers=False,
+                                                                    find_unused_parameters=True)
 
         else:
             # if arg.gpu is None, DDP will divide and allocate batch_size
@@ -170,9 +176,11 @@ def main_worker(gpu, ngpus_per_node, args):
     elif args.gpu is not None:
         torch.cuda.set_device(args.gpu)
         model.model = model.model.cuda(args.gpu)
+        model.model_ta = model.model_ta.cuda(args.gpu)
 
     else:
         model.model = torch.nn.DataParallel(model.model).cuda()
+        model.model_ta = torch.nn.DataParallel(model.model_ta).cuda()
 
     import copy
     model.ema_model = copy.deepcopy(model.model)
