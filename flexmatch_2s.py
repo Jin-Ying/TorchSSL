@@ -139,8 +139,12 @@ def main_worker(gpu, ngpus_per_node, args):
     scheduler = get_cosine_schedule_with_warmup(optimizer,
                                                 args.num_train_iter,
                                                 num_warmup_steps=args.num_train_iter * 0)
+    optimizer_ta = get_optimizer(model.model_ta, args.optim, args.lr, args.momentum, args.weight_decay)
+    scheduler_ta = get_cosine_schedule_with_warmup(optimizer_ta,
+                                                args.num_train_iter,
+                                                num_warmup_steps=args.num_train_iter * 0)
     ## set SGD and cosine lr on flexmatch
-    model.set_optimizer(optimizer, scheduler)
+    model.set_optimizer(optimizer, optimizer_ta, scheduler, scheduler_ta)
 
     # SET Devices for (Distributed) DataParallel
     if not torch.cuda.is_available():
