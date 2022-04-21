@@ -19,7 +19,7 @@ from sklearn.metrics import *
 from copy import deepcopy
 
 
-class FlexMatch:
+class FlexMatch_2s:
     def __init__(self, net_builder, num_classes, ema_m, T, p_cutoff, lambda_u, \
                  hard_label=True, t_fn=None, p_fn=None, it=0, num_eval_iter=1000, tb_log=None, logger=None):
         """
@@ -38,7 +38,7 @@ class FlexMatch:
             logger: logger (see utils.py)
         """
 
-        super(FlexMatch, self).__init__()
+        super(FlexMatch_2s, self).__init__()
 
         # momentum update param
         self.loader = {}
@@ -209,7 +209,7 @@ class FlexMatch:
                 for t_params, s_params in zip(
                     self.model.named_parameters(), self.model_ta.named_parameters()
                 ):
-                    if 'module.decoder.classifier' not in t_params[0]:
+                    if 'fc' not in t_params[0]:
                         t_params[1].data = (
                             (1 - self.ema_m) * t_params[1].data + self.ema_m * s_params[1].data
                         )
