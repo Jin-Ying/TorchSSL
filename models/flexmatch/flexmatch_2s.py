@@ -205,14 +205,14 @@ class FlexMatch_2s:
             self.model_ta.zero_grad()
 
             self.model.eval()
-            with torch.no_grad():
-                for t_params, s_params in zip(
-                    self.model.named_parameters(), self.model_ta.named_parameters()
-                ):
-                    if 'fc' not in t_params[0]:
-                        t_params[1].data = (
-                            (1 - self.ema_m) * t_params[1].data + self.ema_m * s_params[1].data
-                        )
+            # with torch.no_grad():
+            #     for t_params, s_params in zip(
+            #         self.model.named_parameters(), self.model_ta.named_parameters()
+            #     ):
+            #         if 'fc' not in t_params[0]:
+            #             t_params[1].data = (
+            #                 (1 - self.ema_m) * t_params[1].data + self.ema_m * s_params[1].data
+            #             )
 
             self.model.train()
 
