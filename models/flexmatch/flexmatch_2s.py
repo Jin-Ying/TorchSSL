@@ -229,10 +229,14 @@ class FlexMatch_2s:
                 T = self.t_fn(self.it)
                 p_cutoff = self.p_fn(self.it)
 
-                unsup_loss, mask, select, pseudo_lb = consistency_loss(logits_x_ulb_s,
-                                                                       logits_x_ulb_w,
-                                                                       'ce', T, p_cutoff,
-                                                                       use_hard_labels=args.hard_label)
+                unsup_loss, mask, select, pseudo_lb, p_model = consistency_loss(logits_x_ulb_s,
+                                                                                logits_x_ulb_w,
+                                                                                classwise_acc,
+                                                                                p_target,
+                                                                                p_model,
+                                                                                'ce', T, p_cutoff,
+                                                                                use_hard_labels=args.hard_label,
+                                                                                use_DA=args.use_DA)
 
                 sup_loss = sup_loss + self.lambda_u * unsup_loss
             
