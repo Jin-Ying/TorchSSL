@@ -217,9 +217,24 @@ class FlexMatch_2s:
             self.model.train()
 
             with amp_cm():
+                # logits = self.model(inputs)
+                # logits_x_lb = logits[:num_lb]
+                # sup_loss = ce_loss(logits_x_lb, y_lb, reduction='mean')
                 logits = self.model(inputs)
                 logits_x_lb = logits[:num_lb]
+                logits_x_ulb_w, logits_x_ulb_s = logits[num_lb:].chunk(2)
                 sup_loss = ce_loss(logits_x_lb, y_lb, reduction='mean')
+
+                # hyper-params for update
+                T = self.t_fn(self.it)
+                p_cutoff = self.p_fn(self.it)
+
+                unsup_loss, mask, select, pseudo_lb = consistency_loss(logits_x_ulb_s,
+                                                                       logits_x_ulb_w,
+                                                                       'ce', T, p_cutoff,
+                                                                       use_hard_labels=args.hard_label)
+
+                sup_loss = sup_loss + self.lambda_u * unsup_loss
             
             if args.amp:
                 scaler.scale(sup_loss).backward()
